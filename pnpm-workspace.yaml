@@ -1,0 +1,3 @@
+packages:
+  - "apps/*"
+  - "../ts-packages/packages/*"

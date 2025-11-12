@@ -1,0 +1,14 @@
+{
+  "name": "personal-notes-hub",
+  "version": "1.0.0",
+  "description": "A microservice based notes app",
+  "scripts": {
+    "start": "docker compose up -d",
+    "stop": "docker compose down",
+    "restart": "docker compose restart",
+    "build": "docker compose up --build -d",
+    "logs": "docker compose logs -f",
+    "dev": "docker compose up --build"
+  },
+  "packageManager": "pnpm@10.20.0"
+}
