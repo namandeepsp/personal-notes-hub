@@ -1,0 +1,15 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package.json ./
+COPY pnpm-lock.yaml* ./
+RUN npm install -g pnpm && pnpm install
+
+COPY . .
+RUN pnpm prisma:generate
+RUN pnpm build || (echo "Build failed, checking errors:" && ls -la && cat tsconfig.json)
+
+EXPOSE 8080
+
+CMD ["sh", "-c", "pnpm prisma:deploy && pnpm start"]
