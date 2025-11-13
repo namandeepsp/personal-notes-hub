@@ -1,46 +1,74 @@
 import express from 'express';
-type Request = express.Request;
-type Response = express.Response;
-import cors from 'cors';
-import helmet from 'helmet';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { authMiddleware } from './middleware/auth';
 import { SERVICES, PROTECTED_ROUTES } from './config/services';
 import { serverError } from '@naman_deep_singh/response-utils';
+import { ExpressServer, addHealthCheck } from '@naman_deep_singh/server-utils';
 
-const app = express();
+// Custom middleware for gateway request logging
+function requestLogger(req: express.Request, res: express.Response, next: express.NextFunction) {
+  console.log('Gateway micro service got a hit:', req.method, req.url);
+  next();
+}
 
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
-
-// Health check
-app.get('/health', (_: Request, res: Response) => {
-  res.status(200).json({ status: 'ok', service: 'gateway' });
-});
-
-// Test auth service connection
-app.get('/test-auth', async (_: Request, res: Response) => {
-  try {
-    const response = await fetch(`${SERVICES.AUTH}/health`);
-    const data = await response.json();
-    res.json({ gateway: 'ok', authService: data, authUrl: SERVICES.AUTH });
-  } catch (error) {
-    res.status(500).json({ error: 'Cannot reach auth service', authUrl: SERVICES.AUTH });
+// Protected routes middleware
+function routeProtector(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const isProtected = PROTECTED_ROUTES.some(route => req.path.startsWith(route));
+  if (isProtected) {
+    return authMiddleware(req, res, next);
   }
+  next();
+}
+
+// Create server instance
+const serverInstance = new ExpressServer('Gateway Service', '1.0.0', {
+  port: Number(process.env.PORT) || 5000,
+  cors: true,
+  helmet: true,
+  json: true,
+  customMiddleware: [requestLogger, routeProtector],
+  healthCheck: false, // We'll add custom health check
+  gracefulShutdown: true
 });
 
-// Auth routes (no auth required)
+// Get the Express app
+const app = serverInstance.app;
+
+// Add custom health check with auth service connectivity
+addHealthCheck(app, '/health', {
+  customChecks: [
+    {
+      name: 'auth-service-connectivity',
+      check: async () => {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+          const response = await fetch(`${SERVICES.AUTH}/health`, {
+            method: 'GET',
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+          return response.ok;
+        } catch (error) {
+          console.log('Auth service health check failed:', error instanceof Error ? error.message : 'Unknown error');
+          return false;
+        }
+      }
+    }
+  ]
+});
+
+// Auth routes (no authentication required)
 app.use('/auth', createProxyMiddleware({
   target: SERVICES.AUTH,
   changeOrigin: true,
   pathRewrite: { '^/auth': '' },
   timeout: 30000,
   proxyTimeout: 30000,
-  logLevel: 'debug',
   onProxyReq: (proxyReq, req, res) => {
-    console.log(`Proxying ${req.method} ${req.url} to ${SERVICES.AUTH}${req.url.replace('/auth', '')}`);
-    // Fix for POST requests with body
+    console.log(`Proxying ${req.method} ${req.url} to ${SERVICES.AUTH}`);
     if (req.body && (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH')) {
       const bodyData = JSON.stringify(req.body);
       proxyReq.setHeader('Content-Type', 'application/json');
@@ -49,28 +77,23 @@ app.use('/auth', createProxyMiddleware({
     }
   },
   onProxyRes: (proxyRes, req, res) => {
-    console.log(`Response from auth service: ${proxyRes.statusCode}`);
+    console.log(`Auth service response: ${proxyRes.statusCode}`);
   },
   onError: (err, req, res) => {
-    console.error('Proxy error:', err.message);
+    console.error('Auth proxy error:', err.message);
     return serverError('Gateway error', res);
   }
 }));
 
-// Protected routes middleware
-app.use((req: Request, res: Response, next) => {
-  const isProtected = PROTECTED_ROUTES.some(route => req.path.startsWith(route));
-  if (isProtected) {
-    return authMiddleware(req, res, next);
-  }
-  next();
-});
-
-// Notes service routes
+// Notes service routes (protected)
 app.use('/api/notes', createProxyMiddleware({
   target: SERVICES.NOTES,
   changeOrigin: true,
-  pathRewrite: { '^/api/notes': '' }
+  pathRewrite: { '^/api/notes': '' },
+  onError: (err, req, res) => {
+    console.error('Notes proxy error:', err.message);
+    return serverError('Notes service unavailable', res);
+  }
 }));
 
-export default app;
+export default serverInstance;

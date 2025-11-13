@@ -1,29 +1,28 @@
-import app from './app';
+import serverInstance from './app';
 import { connectDB, disconnectDB } from './db/index';
-
-const PORT = Number(process.env.PORT) || 8080;
-let server: import('http').Server;
 
 const startServer = async () => {
     try {
         await connectDB();
+        console.log('✅ Database connected successfully');
 
-        server = app.listen(PORT, () => {
-            console.log(`🚀 Auth service running on http://localhost:${PORT}`);
+        // Start the server instance
+        await serverInstance.start();
+        
+        // Add custom shutdown logic
+        process.on('SIGINT', async () => {
+            console.log('🔌 Disconnecting from database...');
+            await disconnectDB();
+            console.log('✅ Database disconnected');
+            await serverInstance.stop();
         });
-
-        /* Graceful shutdown */
-        const shutdown = async (signal: string) => {
-            console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
-            server.close(async () => {
-                await disconnectDB();
-                console.log('👋 Server closed. Exiting now.');
-                process.exit(0);
-            });
-        };
-
-        process.on('SIGINT', () => shutdown('SIGINT'));
-        process.on('SIGTERM', () => shutdown('SIGTERM'));
+        
+        process.on('SIGTERM', async () => {
+            console.log('🔌 Disconnecting from database...');
+            await disconnectDB();
+            console.log('✅ Database disconnected');
+            await serverInstance.stop();
+        });
     } catch (err) {
         console.error('❌ Server startup failed:', err);
         process.exit(1);
