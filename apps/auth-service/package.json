@@ -18,13 +18,14 @@
   "license": "ISC",
   "packageManager": "pnpm@10.20.0",
   "dependencies": {
-    "@naman_deep_singh/response-utils": "^1.0.6",
-    "@naman_deep_singh/security": "^1.0.3",
+    "@naman_deep_singh/response-utils": "^1.0.7",
+    "@naman_deep_singh/security": "^1.0.4",
+    "@naman_deep_singh/server-utils": "^1.0.4",
     "@prisma/client": "^6.19.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "5.1.0",
     "helmet": "^8.1.0"
   },
   "devDependencies": {
