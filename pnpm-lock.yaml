@@ -8,6 +8,12 @@ importers:
 
   .: {}
 
+  ../ts-packages/packages/js-extensions:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   ../ts-packages/packages/response-utils:
     devDependencies:
       typescript:
@@ -35,13 +41,25 @@ importers:
 
   ../ts-packages/packages/server-utils:
     dependencies:
+      '@types/express':
+        specifier: ^5.0.5
+        version: 5.0.5
+      cookie-parser:
+        specifier: ^1.4.6
+        version: 1.4.7
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      helmet:
+        specifier: ^8.1.0
+        version: 8.1.0
     devDependencies:
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.25
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -55,36 +73,15 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4
       '@naman_deep_singh/server-utils':
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.8
+        version: 1.0.8
       '@prisma/client':
         specifier: ^6.19.0
         version: 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
-      cookie-parser:
-        specifier: ^1.4.6
-        version: 1.4.7
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
-      express:
-        specifier: 5.1.0
-        version: 5.1.0
-      helmet:
-        specifier: ^8.1.0
-        version: 8.1.0
     devDependencies:
-      '@types/cookie-parser':
-        specifier: ^1.4.7
-        version: 1.4.10(@types/express@5.0.5)
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.5
-        version: 5.0.5
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -103,28 +100,22 @@ importers:
 
   apps/gateway-service:
     dependencies:
+      '@naman_deep_singh/js-extensions':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@naman_deep_singh/response-utils':
         specifier: ^1.0.7
         version: 1.0.7
       '@naman_deep_singh/server-utils':
-        specifier: ^1.0.4
-        version: 1.0.4
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      express:
-        specifier: 5.1.0
-        version: 5.1.0
-      helmet:
-        specifier: ^7.1.0
-        version: 7.2.0
+        specifier: ^1.0.8
+        version: 1.0.8
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       http-proxy-middleware:
         specifier: ^2.0.6
         version: 2.0.9(@types/express@5.0.5)
     devDependencies:
-      '@types/cors':
-        specifier: ^2.8.17
-        version: 2.8.19
       '@types/express':
         specifier: ^5.0.5
         version: 5.0.5
@@ -134,6 +125,43 @@ importers:
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.10.0)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  apps/notes-service:
+    dependencies:
+      '@naman_deep_singh/js-extensions':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@naman_deep_singh/response-utils':
+        specifier: ^1.0.7
+        version: 1.0.7
+      '@naman_deep_singh/security':
+        specifier: ^1.0.4
+        version: 1.0.4
+      '@naman_deep_singh/server-utils':
+        specifier: ^1.0.6
+        version: 1.0.6
+      '@prisma/client':
+        specifier: ^6.19.0
+        version: 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.10.0
+      nodemon:
+        specifier: ^3.1.10
+        version: 3.1.10
+      prisma:
+        specifier: ^6.19.0
+        version: 6.19.0(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@24.10.0)(typescript@5.9.3)
@@ -157,14 +185,20 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
+  '@naman_deep_singh/js-extensions@1.0.0':
+    resolution: {integrity: sha512-b4ExpIxqxTpS35hac7D1+zkX9iXnrC+sLz0IgZDae2BVtkHcE3yqI8P4QgWWCBWJ1K1BZY7lPmZYhbsSp1+b2A==}
+
   '@naman_deep_singh/response-utils@1.0.7':
     resolution: {integrity: sha512-5kl6QoPl7DBzd6diWcHWLTPHzfsFYeY4bwrGuzLC0x+2tGPZYunYHypftoulOqe2rqDDlh/WzbvbqM7EUt28sA==}
 
   '@naman_deep_singh/security@1.0.4':
     resolution: {integrity: sha512-tXgBEYfN+hgg0jKjuco9uXti/SovW1kcRxR+B6Fj8zGksKyAUaRFYe7nGpGDU0kF8h20s6Ul24wjJ0neV9l/IA==}
 
-  '@naman_deep_singh/server-utils@1.0.4':
-    resolution: {integrity: sha512-A4v4RUL7c1+5nxaKP3ZseFo80Hk0TvDgtk1QEAYRivnfqawPbii27+NXbIspMLWq356yDHjM+zE8jjIGgtNjgw==}
+  '@naman_deep_singh/server-utils@1.0.6':
+    resolution: {integrity: sha512-mkw7IcL1LlSEeyBy+lvbSoF5XqzXQxI1jsHkBxYDODI8iKZFfmqaqPIiBk8hGmsPly+LxLa95nLNlci/GRGpmA==}
+
+  '@naman_deep_singh/server-utils@1.0.8':
+    resolution: {integrity: sha512-TNKnpbuqGsQPpIhTgj5zmFYjhvsTdm0Xx0DlHEaguxA20n6DQBU9SqnEBzMEKBjP5NBmFJkZDlxjpQvrWzQ1QA==}
 
   '@prisma/client@6.19.0':
     resolution: {integrity: sha512-QXFT+N/bva/QI2qoXmjBzL7D6aliPffIwP+81AdTGq0FXDoLxLkWivGMawG8iM5B9BKfxLIXxfWWAF6wbuJU6g==}
@@ -220,22 +254,11 @@ packages:
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
-  '@types/cookie-parser@1.4.10':
-    resolution: {integrity: sha512-B4xqkqfZ8Wek+rCOeRxsjMS9OgvzebEzzLYw7NHYuvzb7IdxOkI0ZHGgeEBX4PUM7QGVvNSK60T3OvWj3YfBRg==}
-    peerDependencies:
-      '@types/express': '*'
-
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
 
-  '@types/express-serve-static-core@4.19.7':
-    resolution: {integrity: sha512-FvPtiIf1LfhzsaIXhv/PHan/2FeQBbtBDtfX2QfvPxdUelMDEckK08SM6nqo1MIZY3RUlfA+HV8+hFUSio78qg==}
-
   '@types/express-serve-static-core@5.1.0':
     resolution: {integrity: sha512-jnHMsrd0Mwa9Cf4IdOzbz543y4XJepXrbia2T4b6+spXC2We3t1y6K44D3mR8XMFSXMCf3/l7rCgddfx7UNVBA==}
-
-  '@types/express@4.17.25':
-    resolution: {integrity: sha512-dVd04UKsfpINUnK0yBoYHDF3xu7xVH4BuDotC/xGuycx4CgbP48X/KF/586bcObxT0HENHXEU8Nqtu6NR+eKhw==}
 
   '@types/express@5.0.5':
     resolution: {integrity: sha512-LuIQOcb6UmnF7C1PCFmEU1u2hmiHL43fgFQX67sN3H4Z+0Yk0Neo++mFsBjhOAuLzvlQeqAAkeDOZrJs9rzumQ==}
@@ -542,10 +565,6 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
-
-  helmet@7.2.0:
-    resolution: {integrity: sha512-ZRiwvN089JfMXokizgqEPXsl2Guk094yExfoDXR0cBYWxtBbaSww/w+vT4WEJsBW2iTUi1GgZ6swmoug3Oy4Xw==}
-    engines: {node: '>=16.0.0'}
 
   helmet@8.1.0:
     resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
@@ -918,6 +937,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@naman_deep_singh/js-extensions@1.0.0': {}
+
   '@naman_deep_singh/response-utils@1.0.7': {}
 
   '@naman_deep_singh/security@1.0.4':
@@ -925,9 +946,23 @@ snapshots:
       bcryptjs: 3.0.3
       jsonwebtoken: 9.0.2
 
-  '@naman_deep_singh/server-utils@1.0.4':
+  '@naman_deep_singh/server-utils@1.0.6':
     dependencies:
+      '@types/express': 5.0.5
+      cookie-parser: 1.4.7
+      cors: 2.8.5
       express: 5.1.0
+      helmet: 8.1.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@naman_deep_singh/server-utils@1.0.8':
+    dependencies:
+      '@types/express': 5.0.5
+      cookie-parser: 1.4.7
+      cors: 2.8.5
+      express: 5.1.0
+      helmet: 8.1.0
     transitivePeerDependencies:
       - supports-color
 
@@ -987,20 +1022,9 @@ snapshots:
     dependencies:
       '@types/node': 24.10.0
 
-  '@types/cookie-parser@1.4.10(@types/express@5.0.5)':
-    dependencies:
-      '@types/express': 5.0.5
-
   '@types/cors@2.8.19':
     dependencies:
       '@types/node': 24.10.0
-
-  '@types/express-serve-static-core@4.19.7':
-    dependencies:
-      '@types/node': 24.10.0
-      '@types/qs': 6.14.0
-      '@types/range-parser': 1.2.7
-      '@types/send': 1.2.1
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
@@ -1008,13 +1032,6 @@ snapshots:
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
-
-  '@types/express@4.17.25':
-    dependencies:
-      '@types/body-parser': 1.19.6
-      '@types/express-serve-static-core': 4.19.7
-      '@types/qs': 6.14.0
-      '@types/serve-static': 1.15.10
 
   '@types/express@5.0.5':
     dependencies:
@@ -1345,8 +1362,6 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
-
-  helmet@7.2.0: {}
 
   helmet@8.1.0: {}
 

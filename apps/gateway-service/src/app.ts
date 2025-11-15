@@ -1,18 +1,17 @@
-import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { authMiddleware } from './middleware/auth';
+import { authMiddleware } from './middleware';
 import { SERVICES, PROTECTED_ROUTES } from './config/services';
 import { serverError } from '@naman_deep_singh/response-utils';
-import { ExpressServer, addHealthCheck } from '@naman_deep_singh/server-utils';
+import { ExpressServer, Request, Response, NextFunction, getEnvBoolean, getEnvNumber } from '@naman_deep_singh/server-utils';
 
 // Custom middleware for gateway request logging
-function requestLogger(req: express.Request, res: express.Response, next: express.NextFunction) {
+function requestLogger(req: Request, res: Response, next: NextFunction) {
   console.log('Gateway micro service got a hit:', req.method, req.url);
   next();
 }
 
 // Protected routes middleware
-function routeProtector(req: express.Request, res: express.Response, next: express.NextFunction) {
+function routeProtector(req: Request, res: Response, next: NextFunction) {
   const isProtected = PROTECTED_ROUTES.some(route => req.path.startsWith(route));
   if (isProtected) {
     return authMiddleware(req, res, next);
@@ -22,43 +21,33 @@ function routeProtector(req: express.Request, res: express.Response, next: expre
 
 // Create server instance
 const serverInstance = new ExpressServer('Gateway Service', '1.0.0', {
-  port: Number(process.env.PORT) || 5000,
+  port: getEnvNumber("PORT", 5000),
   cors: true,
   helmet: true,
   json: true,
   customMiddleware: [requestLogger, routeProtector],
   healthCheck: false, // We'll add custom health check
-  gracefulShutdown: true
+  gracefulShutdown: true,
+  periodicHealthCheck: {
+    enabled: getEnvBoolean("PERIODIC_HEALTH_CHECK", false) || process.env.NODE_ENV === 'production',
+    interval: parseInt(process.env.HEALTH_CHECK_INTERVAL || '30000'),
+    services: [
+      {
+        name: 'auth-service',
+        url: `${SERVICES.AUTH}/health`,
+        timeout: 5000
+      },
+      {
+        name: 'notes-service',
+        url: `${SERVICES.NOTES}/health`,
+        timeout: 5000
+      }
+    ]
+  }
 });
 
 // Get the Express app
 const app = serverInstance.app;
-
-// Add custom health check with auth service connectivity
-addHealthCheck(app, '/health', {
-  customChecks: [
-    {
-      name: 'auth-service-connectivity',
-      check: async () => {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-          const response = await fetch(`${SERVICES.AUTH}/health`, {
-            method: 'GET',
-            signal: controller.signal
-          });
-
-          clearTimeout(timeoutId);
-          return response.ok;
-        } catch (error) {
-          console.log('Auth service health check failed:', error instanceof Error ? error.message : 'Unknown error');
-          return false;
-        }
-      }
-    }
-  ]
-});
 
 // Auth routes (no authentication required)
 app.use('/auth', createProxyMiddleware({
@@ -89,7 +78,7 @@ app.use('/auth', createProxyMiddleware({
 app.use('/api/notes', createProxyMiddleware({
   target: SERVICES.NOTES,
   changeOrigin: true,
-  pathRewrite: { '^/api/notes': '' },
+  pathRewrite: { '^/api/notes': 'notes' },
   onError: (err, req, res) => {
     console.error('Notes proxy error:', err.message);
     return serverError('Notes service unavailable', res);

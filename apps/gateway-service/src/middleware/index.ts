@@ -1,7 +1,4 @@
-import express from 'express';
-type Request = express.Request;
-type Response = express.Response;
-type NextFunction = express.NextFunction;
+import { Request, Response, NextFunction } from '@naman_deep_singh/server-utils';
 import { SERVICES } from '../config/services';
 import { serverError, unauthorized } from '@naman_deep_singh/response-utils';
 
