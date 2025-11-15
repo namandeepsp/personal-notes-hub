@@ -1,0 +1,28 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_CONNECTION_STRING")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Note {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  content     String
+  tags        String[]  @default([])
+
+  isPinned    Boolean   @default(false)
+  isArchived  Boolean   @default(false)
+  isTrashed   Boolean   @default(false)
+
+  theme       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastViewedAt DateTime?
+
+  @@map("notes")
+}
+

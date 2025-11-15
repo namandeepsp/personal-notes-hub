@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { signup, login, logout, verify } from '../controllers/authController';
+import { Router } from '@naman_deep_singh/server-utils';
+import { signup, login, logout, verify } from '../controllers';
 import { validateSignup, validateLogin } from '../middleware/validation';
 import { rateLimit } from '@naman_deep_singh/server-utils';
 

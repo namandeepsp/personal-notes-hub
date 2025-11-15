@@ -1,4 +1,16 @@
+/* ENV intialization should be done first */
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { initExtensions } from '@naman_deep_singh/js-extensions';
 import serverInstance from './app';
+
+// Initialize JavaScript extensions
+initExtensions({
+  number: false,
+  array: false,
+  object: false,
+});
 
 const startServer = async () => {
   try {

@@ -6,6 +6,13 @@ services:
     env_file:
       - ./apps/auth-service/.env
 
+  notes-service:
+    build: ./apps/notes-service
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./apps/notes-service/.env
+
   gateway-service:
     build: ./apps/gateway-service
     ports:

@@ -9,15 +9,13 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@naman_deep_singh/js-extensions": "^1.0.0",
     "@naman_deep_singh/response-utils": "^1.0.7",
-    "@naman_deep_singh/server-utils": "^1.0.4",
-    "cors": "^2.8.5",
-    "express": "5.1.0",
-    "helmet": "^7.1.0",
+    "@naman_deep_singh/server-utils": "^1.0.8",
+    "dotenv": "^17.2.3",
     "http-proxy-middleware": "^2.0.6"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
     "nodemon": "^3.1.10",
